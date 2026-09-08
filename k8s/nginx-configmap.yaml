@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-lb-config
+
+data:
+  nginx.conf: |
+    events {}
+
+    http {
+      server {
+        listen 80;
+
+        location / {
+          # No proxy_http_version/keepalive override here on purpose:
+          # nginx opens a fresh connection to express-service per request,
+          # so kube-proxy picks a (potentially different) pod every time
+          # instead of pinning to whichever pod the client's first
+          # connection landed on.
+          proxy_pass http://express-service.default.svc.cluster.local:80;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+        }
+      }
+    }

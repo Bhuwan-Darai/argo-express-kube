@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: nginx-lb
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: nginx-lb
+
+  template:
+    metadata:
+      labels:
+        app: nginx-lb
+
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 80
+
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-lb-config
