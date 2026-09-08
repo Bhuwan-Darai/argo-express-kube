@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: express-app
+  labels:
+    app: express-app
+
+spec:
+  containers:
+  - name: express-app
+    image: express-app:latest
+    imagePullPolicy: IfNotPresent
+
+    ports: 
+    - containerPort: 3000
+    
+    env: 
+    - name: PORT
+      value: "3000"
